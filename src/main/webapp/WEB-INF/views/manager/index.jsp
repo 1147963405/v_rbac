@@ -28,10 +28,10 @@
 								<a href="#">首页</a>
 							</li>
 
-							<li>
+							<%--<li>
 								<a href="#">首页</a>
 							</li>
-							<li class="active">首页</li>
+							<li class="active">首页</li>--%>
 						</ul><!-- /.breadcrumb -->
 
 						<div class="nav-search" id="nav-search">
