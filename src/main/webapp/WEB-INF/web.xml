@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_0.xsd ">
+	<!-- 中文编码支持 -->
+	<filter>
+		<filter-name>characterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<!-- 指定编码 -->
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>characterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- 空值处理过滤器 -->
+	<filter>
+		<filter-name>nullvalueHandlerFilter</filter-name>
+		<filter-class>com.vanda.vRbac.filter.NullvalueHandlerFilter</filter-class>
+
+	</filter>
+	<filter-mapping>
+		<filter-name>nullvalueHandlerFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+
+	<!-- 核心控制器 -->
+	<servlet>
+		<servlet-name>dispatcherServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<!-- 指定配置类 -->
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value></param-value>
+		</init-param>
+		<!-- 修改容器类是支持注解的容器类 -->
+		<init-param>
+			<param-name>contextClass</param-name>
+			<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcherServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+
+
+
+	<!-- 问题：数据初始化监听器要注入Spring容器的对象，必须要再Spring容器先启动才能启动 -->
+	<!-- 解决方案：使用监听器来启动Spring框架 -->
+	<!-- 问题：Spring框架启动需要哪些参数 -->
+	<!-- 1.需要指定配置文件或者配置类的位置 -->
+	<!-- 2.如果使用的是注解的配置类，需要修改容器的类型 -->
+	<!-- 问题：监听器是不支持初始化参数的。参数如何传递到监听器里面？ -->
+	<!-- 答：通过设置在全局上下文参数里面，ContextLoaderListener监听器是通过获得上下文参数来解决这个问题的 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>com.vanda.vRbac.config</param-value>
+	</context-param>
+	<context-param>
+		<param-name>contextClass</param-name>
+		<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- 数据初始化监听器 -->
+	<listener>
+		<listener-class>com.vanda.vRbac.listener.DataInitializeListener</listener-class>
+	</listener>
+	
+<!-- 	<session-config> -->
+<!-- 	  <session-timeout>1</session-timeout> -->
+<!-- 	</session-config> -->
+
+
+</web-app>
